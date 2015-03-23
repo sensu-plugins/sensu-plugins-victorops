@@ -15,6 +15,7 @@ require 'json'
 # VictorOps Handler
 #
 class VictorOps < Sensu::Handler
+  # rubocop:disable Metrics/AbcSize
   def handle
     config = settings['victorops']
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
@@ -26,7 +27,6 @@ class VictorOps < Sensu::Handler
     state_message = description
     begin
       timeout(10) do
-
         case @event['action']
         when 'create'
           case @event['check']['status']
@@ -39,7 +39,7 @@ class VictorOps < Sensu::Handler
           message_type = 'RECOVERY'
         end
 
-        payload = Hash.new
+        payload = {}
         payload[:message_type] = message_type
         payload[:state_message] = state_message.chomp
         payload[:entity_id] = entity_id
