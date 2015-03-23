@@ -47,7 +47,9 @@ class VictorOps < Sensu::Handler
         payload[:check] = @event['check']
         payload[:client] = @event['client']
 
-        uri   = URI("#{config['api_url'].chomp('/')}/#{config['routing_key']}")
+        routing_key = @event[:check][:routing_key] ? @event[:check][:routing_key] : config['routing_key']
+
+        uri   = URI("#{config['api_url'].chomp('/')}/#{routing_key}")
         https = Net::HTTP.new(uri.host, uri.port)
 
         https.use_ssl = true
