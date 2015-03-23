@@ -11,6 +11,9 @@ require 'net/http'
 require 'net/https'
 require 'json'
 
+#
+# VictorOps Handler
+#
 class VictorOps < Sensu::Handler
   def handle
     config = settings['victorops']
