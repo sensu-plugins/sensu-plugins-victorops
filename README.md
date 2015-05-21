@@ -5,6 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/sensu-plugins/sensu-plugins-victorops/badges/gpa.svg)](https://codeclimate.com/github/sensu-plugins/sensu-plugins-victorops)
 [![Test Coverage](https://codeclimate.com/github/sensu-plugins/sensu-plugins-victorops/badges/coverage.svg)](https://codeclimate.com/github/sensu-plugins/sensu-plugins-victorops)
 [![Dependency Status](https://gemnasium.com/sensu-plugins/sensu-plugins-victorops.svg)](https://gemnasium.com/sensu-plugins/sensu-plugins-victorops)
+[ ![Codeship Status for sensu-plugins/sensu-plugins-victorops](https://codeship.com/projects/3639bc20-e210-0132-d166-3642858bbef8/status?branch=master)](https://codeship.com/projects/81382)
 
 ## Functionality
 
