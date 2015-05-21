@@ -1,16 +1,16 @@
 require 'json'
 
 # encoding: utf-8
-module SensuPluginsWordpress
+module SensuPluginsVictorops
   # This defines the version of the gem
   module Version
     MAJOR = 0
     MINOR = 0
     PATCH = 1
 
-    VER_STRING = [MAJOR, MINOR, PATCH, 'alpha.2'].compact.join('.')
+    VER_STRING = [MAJOR, MINOR, PATCH].compact.join('.')
 
-    NAME   = 'sensu-plugins-wordpress'
+    NAME   = 'sensu-plugins-victorops'
     BANNER = "#{NAME} v%s"
 
     module_function

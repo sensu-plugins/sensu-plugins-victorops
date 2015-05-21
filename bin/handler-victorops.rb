@@ -4,7 +4,6 @@
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-handler'
 require 'uri'
 require 'net/http'
@@ -15,7 +14,6 @@ require 'json'
 # VictorOps Handler
 #
 class VictorOps < Sensu::Handler
-  # rubocop:disable Metrics/AbcSize
   def handle
     config = settings['victorops']
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
