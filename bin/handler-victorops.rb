@@ -8,7 +8,6 @@
 #   - settingsname: Sensu settings name, defaults to victorops
 #   - routingkey: VictorOps routing key
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-handler'
 require 'uri'
 require 'net/http'
