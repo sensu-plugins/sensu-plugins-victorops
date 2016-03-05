@@ -30,10 +30,10 @@ class VictorOps < Sensu::Handler
   def handle
     # validate that we have settings
     unless defined? settings[config[:settingsname]] && !settings[config[:settingsname]].nil?
-      fail "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
+      raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
     end
     unless defined? settings[config[:settingsname]]['api_url'] && !settings[config[:settingsname]]['api_url'].nil?
-      fail "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
+      raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
     end
     api_url = settings[config[:settingsname]]['api_url']
 
@@ -42,7 +42,7 @@ class VictorOps < Sensu::Handler
     routing_key = settings[config[:settingsname]]['routing_key'] if routing_key.nil?
 
     unless defined? routing_key && !routing_key.nil?
-      fail 'routing key not defined, should be in Sensu settings or passed via command arguments'
+      raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
     end
 
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
@@ -56,11 +56,11 @@ class VictorOps < Sensu::Handler
       timeout(10) do
         case @event['action']
         when 'create'
-          case @event['check']['status']
-          when 1
-            message_type = 'WARNING'
-          else
-            message_type = 'CRITICAL'
+          message_type = case @event['check']['status']
+                         when 1
+                           'WARNING'
+                         else
+                           'CRITICAL'
           end
         when 'resolve'
           message_type = 'RECOVERY'

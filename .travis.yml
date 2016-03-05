@@ -1,19 +1,33 @@
 language: ruby
 cache:
-  - bundler
+- bundler
 install:
-  - bundle install
+- bundle install
 rvm:
-  - 1.9.3
-  - 2.0
-  - 2.1
-  - 2.2
+- 1.9.3
+- 2.0
+- 2.1
+- 2.2
 notifications:
   email:
     recipients:
-      - sensu-plugin@sensu-plugins.io
+    - sensu-plugin@sensu-plugins.io
     on_success: change
     on_failure: always
-
 script:
-  - 'bundle exec rake default'
+- bundle exec rake default
+- gem build sensu-plugins-victorops.gemspec
+- gem install sensu-plugins-victorops-*.gem
+deploy:
+  provider: rubygems
+  api_key:
+    secure: B67ocfcOXtFRlUUpk5Hb/iOp0a3clBk2mXB2C7wkymygL1Q0tSPTohtdDenqu1OK9sAWaZMTK30hMQ3PFthoAvgEHg3/QEJuJb4zpnECVZAr3ZZUSLmXZPjUIAMmP5hTxScfvIk3R93BW21yJgP11+76Zp3YKoTgWmspUb9RGys=
+  gem: sensu-plugins-victorops
+  on:
+    ags: true
+    all_branches: true
+    rvm: 1.9.3
+    rvm: 2.0
+    rvm: 2.1
+    rvm: 2.2
+    repo: sensu-plugins/sensu-plugins-victorops
