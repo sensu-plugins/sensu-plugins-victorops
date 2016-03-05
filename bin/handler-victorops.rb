@@ -61,7 +61,7 @@ class VictorOps < Sensu::Handler
                            'WARNING'
                          else
                            'CRITICAL'
-          end
+                         end
         when 'resolve'
           message_type = 'RECOVERY'
         end
