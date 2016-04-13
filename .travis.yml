@@ -24,7 +24,7 @@ deploy:
     secure: B67ocfcOXtFRlUUpk5Hb/iOp0a3clBk2mXB2C7wkymygL1Q0tSPTohtdDenqu1OK9sAWaZMTK30hMQ3PFthoAvgEHg3/QEJuJb4zpnECVZAr3ZZUSLmXZPjUIAMmP5hTxScfvIk3R93BW21yJgP11+76Zp3YKoTgWmspUb9RGys=
   gem: sensu-plugins-victorops
   on:
-    ags: true
+    tags: true
     all_branches: true
     rvm: 1.9.3
     rvm: 2.0
