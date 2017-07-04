@@ -9,6 +9,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Breaking Changes
 - Dropped Ruby 1.9.3 support
+- Updated JSON dependency to 1.8.5
 
 ### Fixed
 - PR template spelling
