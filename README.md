@@ -27,3 +27,12 @@
 
 
 ## Notes
+If you have multiple VictorOps accounts and need to route alerts to different endpoints, specifying the handler name in the config is necessary otherwise, the handler will attempt to route to the default `victorops`.  You will therefore need to use the `-name` switch to specify the API endpoint as noted below.
+
+```
+"victorops_enpoint1": {
+      "type": "pipe",
+      "command": "/opt/sensu/embedded/bin/handler-victorops.rb -name victorops_endpoint1"
+    },
+```
+  
