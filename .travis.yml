@@ -1,12 +1,11 @@
 language: ruby
+services:
+- docker
 cache:
 - bundler
 install:
 - bundle install
 rvm:
-- 2.0
-- 2.1
-- 2.2
 - 2.3.0
 - 2.4.1
 notifications:
@@ -19,17 +18,22 @@ script:
 - bundle exec rake default
 - gem build sensu-plugins-victorops.gemspec
 - gem install sensu-plugins-victorops-*.gem
+before_deploy:
+- bash -c "[ ! -d bonsai/ ] && git clone https://github.com/sensu/sensu-go-bonsai-asset.git bonsai || echo 'bonsai/ exists, skipping git clone'"
 deploy:
-  provider: rubygems
+- provider: rubygems
   api_key:
     secure: B67ocfcOXtFRlUUpk5Hb/iOp0a3clBk2mXB2C7wkymygL1Q0tSPTohtdDenqu1OK9sAWaZMTK30hMQ3PFthoAvgEHg3/QEJuJb4zpnECVZAr3ZZUSLmXZPjUIAMmP5hTxScfvIk3R93BW21yJgP11+76Zp3YKoTgWmspUb9RGys=
   gem: sensu-plugins-victorops
   on:
     tags: true
     all_branches: true
-    rvm: 2.0
-    rvm: 2.1
-    rvm: 2.2
-    rvm: 2.3.0
     rvm: 2.4.1
     repo: sensu-plugins/sensu-plugins-victorops
+- provider: script
+  script: bonsai/ruby-runtime/travis-build-ruby-plugin-assets.sh sensu-plugins-victorops
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    rvm: 2.4.1  
