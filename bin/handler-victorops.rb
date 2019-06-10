@@ -19,6 +19,12 @@ require 'net/https'
 require 'json'
 
 class VictorOps < Sensu::Handler
+  option :api_url,
+         description: 'VictorOps API URL without routing key',
+         short: '-a APIURL',
+         long: '--api-url APIURL',
+         default: nil
+
   option :settingsname,
          description: 'Sensu settings name',
          short: '-n NAME',
@@ -32,18 +38,19 @@ class VictorOps < Sensu::Handler
          default: nil
 
   def handle
-    # validate that we have settings
+    # validate that we have a settings name
     unless defined? settings[config[:settingsname]] && !settings[config[:settingsname]].nil?
       raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
-    end
-    unless defined? settings[config[:settingsname]]['api_url'] && !settings[config[:settingsname]]['api_url'].nil?
-      raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
     end
 
     # validate that we have an api url - environment variables take precedence
     api_url = ENV["VICTOROPS_API_URL"]
     api_url = config[:api_url] if api_url.nil?
     api_url = settings[config[:settingsname]]['api_url'] if api_url.nil?
+
+    unless defined? api_url && !api_url.nil?
+      raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
+    end
 
     # validate that we have a routing key - environment variables take precedence
     routing_key = ENV["VICTOROPS_ROUTING_KEY"]
