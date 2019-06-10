@@ -44,7 +44,7 @@ class VictorOps < Sensu::Handler
     end
 
     # validate that we have an api url - environment variables take precedence
-    api_url = ENV["VICTOROPS_API_URL"]
+    api_url = ENV['VICTOROPS_API_URL']
     api_url = config[:api_url] if api_url.nil?
     api_url = settings[config[:settingsname]]['api_url'] if api_url.nil?
 
@@ -53,7 +53,7 @@ class VictorOps < Sensu::Handler
     end
 
     # validate that we have a routing key - environment variables take precedence
-    routing_key = ENV["VICTOROPS_ROUTING_KEY"]
+    routing_key = ENV['VICTOROPS_ROUTING_KEY']
     routing_key = config[:routing_key] if routing_key.nil?
     routing_key = settings[config[:settingsname]]['routing_key'] if routing_key.nil?
 
