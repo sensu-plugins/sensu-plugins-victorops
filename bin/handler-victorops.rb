@@ -7,6 +7,10 @@
 # arguments:
 #   - settingsname: Sensu settings name, defaults to victorops
 #   - routingkey: VictorOps routing key
+#
+# NOTE: This plugin is Sensu Go enabled. To use this plugin with Sensu Go, add --map_go_event_into_ruby as part of the command. 
+#  Example:
+#    handler-victorops.rb --map_go_event_into_ruby
 
 require 'sensu-handler'
 require 'uri'
@@ -35,10 +39,15 @@ class VictorOps < Sensu::Handler
     unless defined? settings[config[:settingsname]]['api_url'] && !settings[config[:settingsname]]['api_url'].nil?
       raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
     end
-    api_url = settings[config[:settingsname]]['api_url']
 
-    # validate that we have a routing key - command arguments take precedence
-    routing_key = config[:routing_key]
+    # validate that we have an api url - environment variables take precedence
+    api_url = ENV["VICTOROPS_API_URL"]
+    api_url = config[:api_url] if api_url.nil?
+    api_url = settings[config[:settingsname]]['api_url'] if api_url.nil?
+
+    # validate that we have a routing key - environment variables take precedence
+    routing_key = ENV["VICTOROPS_ROUTING_KEY"]
+    routing_key = config[:routing_key] if routing_key.nil?
     routing_key = settings[config[:settingsname]]['routing_key'] if routing_key.nil?
 
     unless defined? routing_key && !routing_key.nil?
