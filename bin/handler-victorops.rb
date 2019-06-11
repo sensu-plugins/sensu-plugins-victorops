@@ -8,7 +8,7 @@
 #   - settingsname: Sensu settings name, defaults to victorops
 #   - routingkey: VictorOps routing key
 #
-# NOTE: This plugin is Sensu Go enabled. To use this plugin with Sensu Go, add --map_go_event_into_ruby as part of the command. 
+# NOTE: This plugin is Sensu Go enabled. To use this plugin with Sensu Go, add --map_go_event_into_ruby as part of the command.
 #  Example:
 #    handler-victorops.rb --map_go_event_into_ruby
 
