@@ -4,7 +4,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-## [2.0.1] - 2019-06-10
 ### Added
 - Adds ability to use environment variables in Sensu Go.
 
