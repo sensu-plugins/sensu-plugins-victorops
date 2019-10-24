@@ -5,7 +5,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Added
-- Adds ability to use environment variables in Sensu Go.
+- Adds ability to use the environment variables `VICTOROPS_API_URL` & `VICTOROPS_ROUTING_KEY` for Sensu Go
 
 ## [2.0.0] - 2019-06-06
 ### Breaking Changes

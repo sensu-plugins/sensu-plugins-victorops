@@ -61,3 +61,4 @@ builds:
   -  "entity.system.arch == 'amd64'"
   -  "entity.system.platform_family == 'debian'"
   -  "entity.system.platform_version.split('.')[0] == '9'"
+  
