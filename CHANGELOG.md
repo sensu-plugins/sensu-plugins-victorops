@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- Adds ability to use the environment variables `VICTOROPS_API_URL` & `VICTOROPS_ROUTING_KEY` for Sensu Go
+
 ## [2.0.0] - 2019-06-06
 ### Breaking Changes
 - Update minimum required ruby version to 2.3. Drop unsupported ruby versions.
