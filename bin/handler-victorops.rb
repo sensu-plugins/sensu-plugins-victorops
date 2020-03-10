@@ -53,16 +53,16 @@ class VictorOps < Sensu::Handler
       # validate that we have a settings name
       unless defined?(settings[config[:settingsname]]) && !settings[config[:settingsname]].nil?
         raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty" unless config[:dryrun]
-      end
-      begin
+
+      else
         api_url = settings[config[:settingsname]]['api_url']
-      rescue NoMethodError
-      end  
+      end
     end
     return api_url if defined?(api_url) && !api_url.nil?
 
     raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty" unless config[:dryrun]
-    return "" 
+
+    return '' 
   end
 
   def set_routing_key
@@ -73,16 +73,16 @@ class VictorOps < Sensu::Handler
       # validate that we have a settings name in the config
       unless defined?(settings[config[:settingsname]]) && !settings[config[:settingsname]].nil?
         raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty" unless config[:dryrun]
-      end
-      begin
+
+      else
         routing_key = settings[config[:settingsname]]['routing_key']
-      rescue NoMethodError 
       end
     end
     return routing_key if defined?(routing_key) && !routing_key.nil?
 
     raise 'routing key not defined, should be in Sensu settings or passed via command arguments'  unless config[:dryrun]
-    return "" 
+
+    return '' 
   end
 
   def dry_run(api_url, routing_key, uri, payload)
@@ -124,20 +124,20 @@ class VictorOps < Sensu::Handler
       puts "  setting name: #{config[:settingsname]} does not exist"
     end
     puts "  using: #{routing_key}"
-    puts " #{@event["action"]}"
+    puts " #{@event['action']}"
     puts "VictorOps Message URI: #{uri}"
     puts "  Message type: #{payload[:message_type]}"
   end
 
   def handle
-
     # validate that we have a client defined
     unless defined?(@event['client']) && !@event['client']['name'].nil?
+
       raise "victorops.rb sensu client not found or has no name. If using with Sensu Go please ensure you have enabled event mapping"
+
     end
     api_url = set_api_url
     routing_key = set_routing_key
-
 
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
 
