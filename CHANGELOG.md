@@ -7,7 +7,12 @@ This CHANGELOG follows the format located [here](https://github.com/sensu-plugin
 ### Added
 - Adds dryrun option to help diagnose settings being used.
 - Extends usages information to include envvar note
+
+### Changed
 - Update dev dependancies
+
+### Breaking Changes
+- Update runtime dependancy for json to 2.3.0
 
 ## [2.1.0] - 2019-10-25
 ### Added
