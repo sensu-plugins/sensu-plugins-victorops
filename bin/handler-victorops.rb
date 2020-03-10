@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # This handler creates and resolves victorops incidents
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
@@ -43,23 +45,10 @@ class VictorOps < Sensu::Handler
          boolean: true,
          default: false
 
-
-
-  def handle
+  def dry_run(api_url,routing_key)
     if config[:dryrun]
       puts "Dryrun: reporting settings and exiting" 
       puts "  option settingsname set: #{config[:settingsname]}"
-    end  
-    # validate that we have a settings name
-    unless defined? settings[config[:settingsname]] && !settings[config[:settingsname]].nil?
-      raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
-    end
-
-    # validate that we have an api url - environment variables take precedence
-    api_url = ENV['VICTOROPS_API_URL']
-    api_url = config[:api_url] if api_url.nil?
-    api_url = settings[config[:settingsname]]['api_url'] if api_url.nil?
-    if config[:dryrun]
       puts "Determing API_URL to use:"
       if ENV['VICTOROPS_API_URL']
         puts "  envvar VICTOROPS_API_URL set: #{ ENV['VICTOROPS_API_URL']}" 
@@ -75,16 +64,6 @@ class VictorOps < Sensu::Handler
         puts "  settings api_url set: #{ settings[config[:settingsname]]['api_url'] }" if settings[config[:settingsname]]['api_url']
       end
       puts "  using: #{api_url}"
-    end
-    unless defined? api_url && !api_url.nil?
-      raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
-    end
-
-    # validate that we have a routing key - environment variables take precedence
-    routing_key = ENV['VICTOROPS_ROUTING_KEY']
-    routing_key = config[:routing_key] if routing_key.nil?
-    routing_key = settings[config[:settingsname]]['routing_key'] if routing_key.nil?
-    if config[:dryrun]
       puts "Determing ROUTING_KEY to use:"
       if ENV['VICTOROPS_ROUTING_KEY']
         puts "  envvar VICTOROPS_ROUTING_KEY set: #{ ENV['VICTOROPS_ROUTING_KEY']}" 
@@ -100,12 +79,37 @@ class VictorOps < Sensu::Handler
         puts "  settings routing_key set: #{ settings[config[:settingsname]]['routing_key'] }" if settings[config[:settingsname]]['routing_key']
       end
       puts "  using: #{routing_key}"
+    end  
+  end
+
+  def handle
+    # validate that we have a settings name
+    unless defined? settings[config[:settingsname]] && !settings[config[:settingsname]].nil?
+      raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
     end
+
+    # validate that we have an api url - environment variables take precedence
+    api_url = ENV['VICTOROPS_API_URL']
+    api_url = config[:api_url] if api_url.nil?
+    api_url = settings[config[:settingsname]]['api_url'] if api_url.nil?
+
+
+    unless defined? api_url && !api_url.nil?
+      raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
+    end
+
+    # validate that we have a routing key - environment variables take precedence
+    routing_key = ENV['VICTOROPS_ROUTING_KEY']
+    routing_key = config[:routing_key] if routing_key.nil?
+    routing_key = settings[config[:settingsname]]['routing_key'] if routing_key.nil?
 
     unless defined? routing_key && !routing_key.nil?
       raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
     end
-    return if config[:dryrun]
+    if config[:dryrun]
+      dry_run(api_url,routing_key)
+      return 
+    end
 
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
 
