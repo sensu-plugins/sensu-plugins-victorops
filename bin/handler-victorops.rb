@@ -45,59 +45,19 @@ class VictorOps < Sensu::Handler
          boolean: true,
          default: false
 
-  def dry_run(api_url,routing_key)
-    return unless config[:dryrun]
-
-    puts 'Dryrun: reporting settings and exiting' 
-    puts "  option settingsname set: #{config[:settingsname]}"
-    puts 'Determing API_URL to use:'
-    if ENV['VICTOROPS_API_URL']
-      puts "  envvar VICTOROPS_API_URL set: #{ENV['VICTOROPS_API_URL']}" 
-    else
-       puts '  envvar VICTOROPS_API_URL not set'
-    end    
-     if config[:api_url]
-       puts "  option api-url set: #{config[:api_url]}"
-    else
-       puts '  option api-url not set'
-     end  
-     if settings[config[:settingsname]]
-       puts "  settings api_url set: #{settings[config[:settingsname]]['api_url'] }" if settings[config[:settingsname]]['api_url']
-     end
-     puts "  using: #{api_url}"
-     puts 'Determing ROUTING_KEY to use:'
-     if ENV['VICTOROPS_ROUTING_KEY']
-       puts "  envvar VICTOROPS_ROUTING_KEY set: #{ENV['VICTOROPS_ROUTING_KEY']}" 
-     else
-       puts '  envvar VICTOROPS_ROUTING_KEY not set'
-     end
-     if config[:routing_key]
-       puts "  option routingkey set: #{config[:routing_key]}" 
-     else
-       puts '  option routingkey not set'
-     end
-     if settings[config[:settingsname]]
-       puts "  settings routing_key set: #{settings[config[:settingsname]]['routing_key'] }" if settings[config[:settingsname]]['routing_key']
-     end
-     puts "  using: #{routing_key}"
-  end
-
-  def handle
-    # validate that we have a settings name
-    unless defined? settings[config[:settingsname]] && !settings[config[:settingsname]].nil?
-      raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
-    end
-
+  def set_api_url
     # validate that we have an api url - environment variables take precedence
     api_url = ENV['VICTOROPS_API_URL']
     api_url = config[:api_url] if api_url.nil?
     api_url = settings[config[:settingsname]]['api_url'] if api_url.nil?
 
-
     unless defined? api_url && !api_url.nil?
       raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
     end
+    return api_url
+  end
 
+  def set_routing_key
     # validate that we have a routing key - environment variables take precedence
     routing_key = ENV['VICTOROPS_ROUTING_KEY']
     routing_key = config[:routing_key] if routing_key.nil?
@@ -106,9 +66,58 @@ class VictorOps < Sensu::Handler
     unless defined? routing_key && !routing_key.nil?
       raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
     end
+    return routing_key
+  end
+
+  def dry_run(api_url, routing_key)
+    return unless config[:dryrun]
+
+    puts 'Dryrun: reporting settings and exiting'
+    puts "  option settingsname set: #{config[:settingsname]}"
+    puts 'Determing API_URL to use:'
+    if ENV['VICTOROPS_API_URL']
+      puts "  envvar VICTOROPS_API_URL set: #{ENV['VICTOROPS_API_URL']}"
+    else
+      puts '  envvar VICTOROPS_API_URL not set'
+    end
+    if config[:api_url]
+      puts "  option api-url set: #{config[:api_url]}"
+    else
+      puts '  option api-url not set'
+    end
+    if settings[config[:settingsname]]
+      puts "  settings api_url set: #{settings[config[:settingsname]]['api_url'] }" if settings[config[:settingsname]]['api_url']
+    end
+    puts "  using: #{api_url}"
+    puts 'Determing ROUTING_KEY to use:'
+    if ENV['VICTOROPS_ROUTING_KEY']
+      puts "  envvar VICTOROPS_ROUTING_KEY set: #{ENV['VICTOROPS_ROUTING_KEY']}"
+    else
+      puts '  envvar VICTOROPS_ROUTING_KEY not set'
+    end
+    if config[:routing_key]
+      puts "  option routingkey set: #{config[:routing_key]}"
+    else
+      puts '  option routingkey not set'
+    end
+    if settings[config[:settingsname]]
+      puts "  settings routing_key set: #{settings[config[:settingsname]]['routing_key'] }" if settings[config[:settingsname]]['routing_key']
+    end
+    puts "  using: #{routing_key}"
+  end
+
+  def handle
+    # validate that we have a settings name
+    unless defined? settings[config[:settingsname]] && !settings[config[:settingsname]].nil?
+      raise "victorops.rb sensu setting '#{config[:settingsname]}' not found or empty"
+    end
+
+    api_url = set_api_url
+    routing_key = set_routing_key
+
     if config[:dryrun]
       dry_run(api_url, routing_key)
-      return 
+      return
     end
 
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
