@@ -54,7 +54,7 @@ class VictorOps < Sensu::Handler
     unless defined? api_url && !api_url.nil?
       raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
     end
-    return api_url
+
   end
 
   def set_routing_key
@@ -66,7 +66,7 @@ class VictorOps < Sensu::Handler
     unless defined? routing_key && !routing_key.nil?
       raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
     end
-    return routing_key
+
   end
 
   def dry_run(api_url, routing_key)
@@ -86,7 +86,7 @@ class VictorOps < Sensu::Handler
       puts '  option api-url not set'
     end
     if settings[config[:settingsname]]
-      puts "  settings api_url set: #{settings[config[:settingsname]]['api_url'] }" if settings[config[:settingsname]]['api_url']
+      puts "  settings api_url set: #{settings[config[:settingsname]]['api_url']}" if settings[config[:settingsname]]['api_url']
     end
     puts "  using: #{api_url}"
     puts 'Determing ROUTING_KEY to use:'
@@ -101,7 +101,7 @@ class VictorOps < Sensu::Handler
       puts '  option routingkey not set'
     end
     if settings[config[:settingsname]]
-      puts "  settings routing_key set: #{settings[config[:settingsname]]['routing_key'] }" if settings[config[:settingsname]]['routing_key']
+      puts "  settings routing_key set: #{settings[config[:settingsname]]['routing_key']}" if settings[config[:settingsname]]['routing_key']
     end
     puts "  using: #{routing_key}"
   end
@@ -127,36 +127,35 @@ class VictorOps < Sensu::Handler
     host = @event['client']['name']
     entity_id = incident_key
     state_message = description
+    case @event['action']
+    when 'create'
+      message_type = case @event['check']['status']
+                     when 1
+                       'WARNING'
+                     else
+                       'CRITICAL'
+                     end
+    when 'resolve'
+      message_type = 'RECOVERY'
+    end
+    payload = {}
+    payload[:message_type] = message_type
+    payload[:state_message] = state_message.chomp
+    payload[:entity_id] = entity_id
+    payload[:host_name] = host
+    payload[:monitoring_tool] = 'sensu'
+
+    # Add in client data
+    payload[:check] = @event['check']
+    payload[:client] = @event['client']
+
+    uri   = URI("#{api_url.chomp('/')}/#{routing_key}")
+    https = Net::HTTP.new(uri.host, uri.port)
+
+    https.use_ssl = true
+
     begin
       timeout(10) do
-        case @event['action']
-        when 'create'
-          message_type = case @event['check']['status']
-                         when 1
-                           'WARNING'
-                         else
-                           'CRITICAL'
-                         end
-        when 'resolve'
-          message_type = 'RECOVERY'
-        end
-
-        payload = {}
-        payload[:message_type] = message_type
-        payload[:state_message] = state_message.chomp
-        payload[:entity_id] = entity_id
-        payload[:host_name] = host
-        payload[:monitoring_tool] = 'sensu'
-
-        # Add in client data
-        payload[:check] = @event['check']
-        payload[:client] = @event['client']
-
-        uri   = URI("#{api_url.chomp('/')}/#{routing_key}")
-        https = Net::HTTP.new(uri.host, uri.port)
-
-        https.use_ssl = true
-
         request      = Net::HTTP::Post.new(uri.path)
         request.body = payload.to_json
         response     = https.request(request)
