@@ -21,8 +21,7 @@ Gem::Specification.new do |s|
                                'development_status' => 'unmaintained',
                                'production_status' => 'unstable - testing reccomended',
                                'release_draft' => 'false',
-                               'release_prerelease' =>:wq
-  'false' }
+                               'release_prerelease' => 'false' }
   s.name                   = 'sensu-plugins-victorops'
   s.platform               = Gem::Platform::RUBY
   s.post_install_message   = 'You can use the embedded Ruby by setting EMBEDDED_RUBY=true in /etc/default/sensu'
