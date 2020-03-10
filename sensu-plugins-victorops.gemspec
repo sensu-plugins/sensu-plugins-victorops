@@ -1,4 +1,6 @@
-lib = File.expand_path('../lib', __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'date'
@@ -12,14 +14,15 @@ Gem::Specification.new do |s|
   s.description            = 'Sensu plugins for Victorops alerting service'
   s.email                  = '<sensu-users@googlegroups.com>'
   s.executables            = Dir.glob('bin/**/*.rb').map { |file| File.basename(file) }
-  s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
+  s.files                  = Dir.glob('{bin,lib}/**/*') + %w[LICENSE README.md CHANGELOG.md]
   s.homepage               = 'https://github.com/sensu-plugins/sensu-plugins-victorops'
   s.license                = 'MIT'
-  s.metadata               = { 'maintainer'         => '',
+  s.metadata               = { 'maintainer' => '',
                                'development_status' => 'unmaintained',
-                               'production_status'  => 'unstable - testing reccomended',
-                               'release_draft'      => 'false',
-                               'release_prerelease' => 'false' }
+                               'production_status' => 'unstable - testing reccomended',
+                               'release_draft' => 'false',
+                               'release_prerelease' =>:wq
+  'false' }
   s.name                   = 'sensu-plugins-victorops'
   s.platform               = Gem::Platform::RUBY
   s.post_install_message   = 'You can use the embedded Ruby by setting EMBEDDED_RUBY=true in /etc/default/sensu'
