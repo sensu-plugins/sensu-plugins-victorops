@@ -54,7 +54,6 @@ class VictorOps < Sensu::Handler
     return if defined? api_url && !api_url.nil?
 
     raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
-
   end
 
   def set_routing_key
@@ -66,7 +65,6 @@ class VictorOps < Sensu::Handler
     return if defined? routing_key && !routing_key.nil?
 
     raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
-
   end
 
   def dry_run(api_url, routing_key)
