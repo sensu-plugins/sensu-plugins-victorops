@@ -46,40 +46,40 @@ class VictorOps < Sensu::Handler
          default: false
 
   def dry_run(api_url,routing_key)
-    if config[:dryrun]
-      puts "Dryrun: reporting settings and exiting" 
-      puts "  option settingsname set: #{config[:settingsname]}"
-      puts "Determing API_URL to use:"
-      if ENV['VICTOROPS_API_URL']
-        puts "  envvar VICTOROPS_API_URL set: #{ ENV['VICTOROPS_API_URL']}" 
-      else 
-        puts "  envvar VICTOROPS_API_URL not set"
-      end    
-      if config[:api_url]
-        puts "  option api-url set: #{ config[:api_url]}"
-      else
-        puts "  option api-url not set"
-      end  
-      if settings[config[:settingsname]]
-        puts "  settings api_url set: #{ settings[config[:settingsname]]['api_url'] }" if settings[config[:settingsname]]['api_url']
-      end
-      puts "  using: #{api_url}"
-      puts "Determing ROUTING_KEY to use:"
-      if ENV['VICTOROPS_ROUTING_KEY']
-        puts "  envvar VICTOROPS_ROUTING_KEY set: #{ ENV['VICTOROPS_ROUTING_KEY']}" 
-      else
-        puts "  envvar VICTOROPS_ROUTING_KEY not set"
-      end
-      if config[:routing_key]
-        puts "  option routingkey set: #{ config[:routing_key]}" 
-      else
-        puts "  option routingkey not set"
-      end
-      if settings[config[:settingsname]]
-        puts "  settings routing_key set: #{ settings[config[:settingsname]]['routing_key'] }" if settings[config[:settingsname]]['routing_key']
-      end
-      puts "  using: #{routing_key}"
-    end  
+    return unless config[:dryrun]
+
+    puts 'Dryrun: reporting settings and exiting' 
+    puts "  option settingsname set: #{config[:settingsname]}"
+    puts 'Determing API_URL to use:'
+    if ENV['VICTOROPS_API_URL']
+      puts "  envvar VICTOROPS_API_URL set: #{ENV['VICTOROPS_API_URL']}" 
+    else
+       puts '  envvar VICTOROPS_API_URL not set'
+    end    
+     if config[:api_url]
+       puts "  option api-url set: #{config[:api_url]}"
+    else
+       puts '  option api-url not set'
+     end  
+     if settings[config[:settingsname]]
+       puts "  settings api_url set: #{settings[config[:settingsname]]['api_url'] }" if settings[config[:settingsname]]['api_url']
+     end
+     puts "  using: #{api_url}"
+     puts 'Determing ROUTING_KEY to use:'
+     if ENV['VICTOROPS_ROUTING_KEY']
+       puts "  envvar VICTOROPS_ROUTING_KEY set: #{ENV['VICTOROPS_ROUTING_KEY']}" 
+     else
+       puts '  envvar VICTOROPS_ROUTING_KEY not set'
+     end
+     if config[:routing_key]
+       puts "  option routingkey set: #{config[:routing_key]}" 
+     else
+       puts '  option routingkey not set'
+     end
+     if settings[config[:settingsname]]
+       puts "  settings routing_key set: #{settings[config[:settingsname]]['routing_key'] }" if settings[config[:settingsname]]['routing_key']
+     end
+     puts "  using: #{routing_key}"
   end
 
   def handle
@@ -107,7 +107,7 @@ class VictorOps < Sensu::Handler
       raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
     end
     if config[:dryrun]
-      dry_run(api_url,routing_key)
+      dry_run(api_url, routing_key)
       return 
     end
 
