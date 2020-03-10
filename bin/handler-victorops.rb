@@ -85,7 +85,7 @@ class VictorOps < Sensu::Handler
     return "" 
   end
 
-  def dry_run(api_url, routing_key, uri)
+  def dry_run(api_url, routing_key, uri, payload)
     return unless config[:dryrun]
 
     puts 'Dryrun: reporting settings and exiting'
@@ -124,7 +124,9 @@ class VictorOps < Sensu::Handler
       puts "  setting name: #{config[:settingsname]} does not exist"
     end
     puts "  using: #{routing_key}"
+    puts " #{@event["action"]}"
     puts "VictorOps Message URI: #{uri}"
+    puts "  Message type: #{payload[:message_type]}"
   end
 
   def handle
@@ -171,7 +173,7 @@ class VictorOps < Sensu::Handler
 
     https.use_ssl = true
     if config[:dryrun]
-      dry_run(api_url, routing_key, uri)
+      dry_run(api_url, routing_key, uri, payload)
       return
     end
 
