@@ -61,7 +61,8 @@ class VictorOps < Sensu::Handler
     end
     return api_url if defined?(api_url) && !api_url.nil?
 
-    raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty"
+    raise "victorops.rb sensu setting '#{config[:settingsname]}.api_url' not found or empty" unless config[:dryrun]
+    return "" 
   end
 
   def set_routing_key
@@ -80,10 +81,11 @@ class VictorOps < Sensu::Handler
     end
     return routing_key if defined?(routing_key) && !routing_key.nil?
 
-    raise 'routing key not defined, should be in Sensu settings or passed via command arguments'
+    raise 'routing key not defined, should be in Sensu settings or passed via command arguments'  unless config[:dryrun]
+    return "" 
   end
 
-  def dry_run(api_url, routing_key)
+  def dry_run(api_url, routing_key, uri)
     return unless config[:dryrun]
 
     puts 'Dryrun: reporting settings and exiting'
@@ -101,6 +103,8 @@ class VictorOps < Sensu::Handler
     end
     if settings[config[:settingsname]]
       puts "  settings api_url set: #{settings[config[:settingsname]]['api_url']}" if settings[config[:settingsname]]['api_url']
+    else
+      puts "  setting name: #{config[:settingsname]} does not exist"
     end
     puts "  using: #{api_url}"
     puts 'Determing ROUTING_KEY to use:'
@@ -116,8 +120,11 @@ class VictorOps < Sensu::Handler
     end
     if settings[config[:settingsname]]
       puts "  settings routing_key set: #{settings[config[:settingsname]]['routing_key']}" if settings[config[:settingsname]]['routing_key']
+    else
+      puts "  setting name: #{config[:settingsname]} does not exist"
     end
     puts "  using: #{routing_key}"
+    puts "VictorOps Message URI: #{uri}"
   end
 
   def handle
@@ -129,10 +136,6 @@ class VictorOps < Sensu::Handler
     api_url = set_api_url
     routing_key = set_routing_key
 
-    if config[:dryrun]
-      dry_run(api_url, routing_key)
-      return
-    end
 
     incident_key = @event['client']['name'] + '/' + @event['check']['name']
 
@@ -167,9 +170,13 @@ class VictorOps < Sensu::Handler
     https = Net::HTTP.new(uri.host, uri.port)
 
     https.use_ssl = true
+    if config[:dryrun]
+      dry_run(api_url, routing_key, uri)
+      return
+    end
 
     begin
-      timeout(10) do
+      Timeout.timeout(10) do
         request      = Net::HTTP::Post.new(uri.path)
         request.body = payload.to_json
         response     = https.request(request)
