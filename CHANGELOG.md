@@ -10,6 +10,7 @@ This CHANGELOG follows the format located [here](https://github.com/sensu-plugin
 
 ### Changed
 - Update dev dependancies
+- Updated Readme with corrected Sensu Go instructions
 
 ### Breaking Changes
 - Update runtime dependancy for json to 2.3.0
