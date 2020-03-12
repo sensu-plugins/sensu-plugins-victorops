@@ -13,39 +13,21 @@
  * bin/handler-victorops.rb
 
 ## Usage
-
 ```
-{
-  "victorops": {
-    "api_url": "YOUR_API_URL_WHITOUT_ROUTING_KEY",
-    "routing_key": "everyone"
-  },
-  "handlers": {
-    "victorops": {
-      "type": "pipe",
-      "command": "handler-victorops.rb"
-    }
-  }
-}
-```
-## Installation
+bin/handler-victorops.rb --help
+Usage: bin/handler-victorops.rb (options)
+    -a, --api-url APIURL             VictorOps API URL without routing key. Or use envvar VICTOROPS_API_URL.
+        --dryrun                     Report settings, and take no action
+        --map-go-event-into-ruby     Enable Sensu Go to Sensu Ruby event mapping. Alternatively set envvar SENSU_MAP_GO_EVENT_INTO_RUBY=1.
+    -r, --routingkey KEY             Routing key. Or use envvar VICTOROPS_ROUTING_KEY.
 
-[Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
-
-
-## Notes
-If you have multiple VictorOps accounts and need to route alerts to different endpoints, specifying the handler name in the config is necessary otherwise, the handler will attempt to route to the default `victorops`.  You will therefore need to use the `-name` switch to specify the API endpoint as noted below.
-
-```
-"victorops_enpoint1": {
-      "type": "pipe",
-      "command": "/opt/sensu/embedded/bin/handler-victorops.rb -name victorops_endpoint1"
-    },
 ```
 
 ### Sensu Go Enabled
 
-This plugin is also Sensu Go enabled. You can map events into ruby by using the flag `--map_go_event_into_ruby` as part of your command. Practically, this might look like:
+Plugin versions 2.0 and higher are now Sensu Go enabled. You can map Sensu Go events into Sensu Classic events by using the flag `--map_go_event_into_ruby` as part of your command. Now that Sensu Classic is now EOL, a future version of this plugin will drop support for Sensu Classic and will assume Sensu Go event structuring.
+
+Here is an example Sensu Go handler resource definition for reference.  Please note, this plugin's Sensu Asset should be used in conjunction with the Sensu Ruby runtime asset.
 
 ```
 ---
@@ -63,11 +45,43 @@ spec:
   filters:
   - is_incident
   env_vars:
-  - KEEPALIVE_SLACK_WEBHOOK=https://alert.victorops.com/integrations/generic/01234567/alert/0123456789101112
+  - VICTOROPS_API_URL=https://alert.victorops.com/integrations/generic/01234567/alert/0123456789101112
   - VICTOROPS_ROUTING_KEY=testing
   runtime_assets:
   - sensu-plugins-victorops
   - sensu-ruby-runtime
 ```
 
-You'll also note that the plugin also supports environment variables. You can use these without having to have a file locally to load in those values. 
+You'll note that the plugin supports environment variables for both routing key and api url. You can define this in the Sensu Go handler resource definition.  You can support multiple VictorOps accounts by having a different handler definition, each with appropriate environment variables defined.
+
+
+# Sensu Classic Support
+Here is an example handlers configuration for Sensu Classic. Please note, Sensu Classic has now reached EOL, and support for Sensu Classic events is planned to be removed in a future version of this plugin. 
+
+```
+{
+  "victorops": {
+    "api_url": "YOUR_API_URL_WHITOUT_ROUTING_KEY",
+    "routing_key": "everyone"
+  },
+  "handlers": {
+    "victorops": {
+      "type": "pipe",
+      "command": "handler-victorops.rb"
+    }
+  }
+}
+```
+
+If you have multiple VictorOps accounts and need to route alerts to different endpoints, specifying the handler name in the config is necessary otherwise, the handler will attempt to route to the default `victorops`.  You will therefore need to use the `-name` switch to specify the API endpoint as noted below.
+
+```
+"victorops_enpoint1": {
+      "type": "pipe",
+      "command": "/opt/sensu/embedded/bin/handler-victorops.rb -name victorops_endpoint1"
+    },
+```
+
+## Installation
+
+[Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
